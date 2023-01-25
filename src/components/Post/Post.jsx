@@ -1,4 +1,5 @@
 import { Avatar } from "../Avatar/Avatar";
+import { Comment } from "../Comment/Comment";
 
 import styles from "./Post.module.css";
 
@@ -13,10 +14,7 @@ export function Post() {
             <span>Web Developer</span>
           </div>
         </div>
-        <time
-          title="11 de Maio de 2022 às 08:13am"
-          dateTime="2022-05-11 08:13:30"
-        >
+        <time title="May, 11, 2022 at 08:13am" dateTime="2022-05-11 08:13:30">
           posted 1 hour ago
         </time>
       </header>
@@ -36,6 +34,20 @@ export function Post() {
         <p>
           <a href="">#uiux #userexperience</a>
         </p>
+      </div>
+
+      <form className={styles.commentForm}>
+        <strong>Give your feedback</strong>
+
+        <textarea placeholder="Leave a comment" />
+        <footer>
+          <button type="submit">Publish</button>
+        </footer>
+      </form>
+      <div className={styles.commentList}>
+        <Comment />
+        <Comment />
+        <Comment />
       </div>
     </article>
   );
