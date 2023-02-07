@@ -1,53 +1,93 @@
+import { useState } from "react";
+import { format, formatDistanceToNow } from "date-fns";
+
 import { Avatar } from "../Avatar/Avatar";
 import { Comment } from "../Comment/Comment";
 
 import styles from "./Post.module.css";
 
-export function Post() {
+export function Post({ post }) {
+  const { author } = post;
+
+  const formattedPulishDate = format(post.publishedAt, "dd LLLL 'at' HH:mm'h'");
+  const distanceFromPublishDateToNow = formatDistanceToNow(post.publishedAt, {
+    addSuffix: true,
+  });
+
+  const [comments, setComments] = useState([1]);
+  const [newCommentText, setNewCommentText] = useState("");
+
+  function handleCreateNewComment(event) {
+    event.preventDefault();
+
+    setComments([...comments, newCommentText]);
+    setNewCommentText("");
+  }
+
+  function handleNewCommentChange(event) {
+    setNewCommentText(event.target.value);
+  }
+
+  function deleteComment(commentToDelete) {
+    const commentsWithoutDeletedOne = comments.filter(
+      (comment) => comment != commentToDelete
+    );
+
+    setComments(commentsWithoutDeletedOne);
+  }
+
   return (
     <article className={styles.post}>
       <header>
         <div className={styles.author}>
-          <Avatar imgSrc="https://avatars.githubusercontent.com/u/88347963?v=4" />
+          <Avatar imgSrc={author.avatarUrl} />
           <div className={styles.authorInfo}>
-            <strong>Luiza Mescolotto</strong>
-            <span>Web Developer</span>
+            <strong>{author.name}</strong>
+            <span>{author.role}</span>
           </div>
         </div>
-        <time title="May, 11, 2022 at 08:13am" dateTime="2022-05-11 08:13:30">
-          posted 1 hour ago
+        <time
+          title={formattedPulishDate}
+          dateTime={post.publishedAt.toISOString()}
+        >
+          {distanceFromPublishDateToNow}
         </time>
       </header>
       <div className={styles.content}>
-        <p>Hi there 👋</p>
-
-        <p>
-          I finally completed my new website/portfolio. It was very challenging
-          to make all the design system and then code it by hand, but I did it!
-          💪🏻{" "}
-        </p>
-
-        <p>
-          <a href="">Check it out and give feedback 👉 devonlane.design</a>
-        </p>
-
-        <p>
-          <a href="">#uiux #userexperience</a>
-        </p>
+        {post.content.map((line, index) => {
+          if (line.type === "paragraph") {
+            return <p key={index}>{line.content}</p>;
+          } else if (line.type === "link") {
+            return (
+              <a key={index} href="">
+                {line.content}
+              </a>
+            );
+          }
+        })}
       </div>
 
-      <form className={styles.commentForm}>
+      <form className={styles.commentForm} onSubmit={handleCreateNewComment}>
         <strong>Give your feedback</strong>
 
-        <textarea placeholder="Leave a comment" />
+        <textarea
+          placeholder="Leave a comment"
+          name="comment"
+          value={newCommentText}
+          onChange={handleNewCommentChange}
+        />
         <footer>
           <button type="submit">Publish</button>
         </footer>
       </form>
       <div className={styles.commentList}>
-        <Comment />
-        <Comment />
-        <Comment />
+        {comments.map((comment, index) => (
+          <Comment
+            key={index}
+            content={comment}
+            onDeleteComment={deleteComment}
+          />
+        ))}
       </div>
     </article>
   );
