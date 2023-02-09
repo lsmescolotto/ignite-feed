@@ -109,7 +109,7 @@
   transition: background-color 0.5s;
 }
 
-.commentForm button:disabled {
+.commentForm button[type="submit"]:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
