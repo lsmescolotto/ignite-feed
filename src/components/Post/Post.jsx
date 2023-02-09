@@ -25,6 +25,7 @@ export function Post({ post }) {
   }
 
   function handleNewCommentChange(event) {
+    event.target.setCustomValidity("");
     setNewCommentText(event.target.value);
   }
 
@@ -35,6 +36,12 @@ export function Post({ post }) {
 
     setComments(commentsWithoutDeletedOne);
   }
+
+  function handleNewCommentInvalid(event) {
+    event.target.setCustomValidity("O campo não pode ser vazio");
+  }
+
+  const isNewCommentEmpty = newCommentText.length === 0;
 
   return (
     <article className={styles.post}>
@@ -75,9 +82,13 @@ export function Post({ post }) {
           name="comment"
           value={newCommentText}
           onChange={handleNewCommentChange}
+          required
+          onInvalid={handleNewCommentInvalid}
         />
         <footer>
-          <button type="submit">Publish</button>
+          <button type="submit" disabled={isNewCommentEmpty}>
+            Publish
+          </button>
         </footer>
       </form>
       <div className={styles.commentList}>
