@@ -7,8 +7,6 @@ import "./global.css";
 import styles from "./App.module.css";
 
 function App() {
-  const [count, setCount] = useState(0);
-
   const posts = [
     {
       id: 1,
